@@ -46,6 +46,22 @@
     - [x] Auto-reactivation
   - [ ] Activity logging
 
+## 🚀 In Progress
+- [ ] Client Management System
+  - [x] Client model
+  - [ ] Client controllers
+    - [ ] Create client
+    - [ ] Update client
+    - [ ] Get client details
+    - [ ] List clients
+    - [ ] Archive client
+  - [ ] Client routes
+  - [ ] Validation middleware
+  - [ ] Client services
+  - [ ] Client notes system
+  - [ ] Project status tracking
+  - [ ] Package assignment
+
 ## 📝 To Do (By Priority)
 
 ### 🔥 High Priority
@@ -73,6 +89,14 @@
   - [ ] API versioning
   - [ ] Response caching
   - [ ] Query optimization
+
+- [ ] Client Features
+  - [ ] Client portal
+  - [ ] Automated proposals
+  - [ ] Project timeline tracking
+  - [ ] Invoice integration
+  - [ ] Document storage
+  - [ ] Client communication log
 
 ### 🔹 Lower Priority
 - [ ] Testing

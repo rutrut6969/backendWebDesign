@@ -1,3 +1,6 @@
+# Project Status
+Track our development progress in the [Development Checklist](CHECKLIST.md). 
+
 # Backend API Service
 
 ## Overview
@@ -661,3 +664,4 @@ For support, please:
 - Express.js team
 - TypeScript team
 - All contributors 
+
