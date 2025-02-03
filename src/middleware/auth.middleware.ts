@@ -1,16 +1,13 @@
 import {Request, Response, NextFunction} from 'express';
 import jwt from 'jsonwebtoken';
 import {environment } from '../config/environment';
-import { User } from '../models/User';
+import { User, IUser } from '../models/User';
+import { Document, Types } from 'mongoose';
 
-interface JwtPayload {
-    id: string;
-}
-declare global {
-    namespace Express {
-        interface Request {
-            user?: any;
-        }
+// Augment the Request type
+declare module 'express-serve-static-core' {
+    interface Request {
+        user: Document<unknown, {}, IUser> & IUser;
     }
 }
 
@@ -27,7 +24,7 @@ export const authenticateToken = async (
             res.status(401).json({message: 'Authentication Required'});
             return;
         }
-        const decoded = jwt.verify(token, environment.jwtSecret) as JwtPayload;
+        const decoded = jwt.verify(token, environment.jwtSecret) as { id: string };
         const user = await User.findById(decoded.id);
 
         if(!user) {
@@ -49,7 +46,7 @@ export const authenticateToken = async (
 
         req.user = user;
         next();
-    } catch (error) {
+    } catch (error: any) {
         res.status(401).json({message: 'Invalid Token'});
         return;
     }

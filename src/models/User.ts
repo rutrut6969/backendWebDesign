@@ -10,7 +10,7 @@ export interface IUser extends Document {
     role: 'owner' | 'admin' | 'user';
     isActive: boolean;
     suspendedAt?: Date;
-    suspendedBy?: Schema.Types.ObjectId;
+    suspendedBy?: any;
     suspensionReason?: string;
     profileImage?: string;
     phoneNumber?: string;

@@ -1,7 +1,10 @@
-import { Router, Request, Response } from 'express';
+import { Router, Response } from 'express';
 import { authenticateToken, isAdmin, isOwner } from '../middleware/auth.middleware';
 import { User } from '../models/User';
 import { sendSuspensionEmail } from '../utils/email.utils';
+import { Types } from 'mongoose';
+import { AuthenticatedRequest } from '../types/custom';
+import { Request } from 'express';
 
 const router: Router = Router();
 
@@ -64,7 +67,7 @@ router.get('/users',
 router.get('/users/:id', 
     authenticateToken, 
     isAdmin, 
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
         try {
             const requestedUser = await User.findById(req.params.id)
                 .select('-password')
@@ -124,7 +127,7 @@ router.get('/users/:id',
 router.patch('/users/:id/role', 
     authenticateToken,
     isOwner,
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
         try {
             const { role } = req.body;
             
@@ -173,7 +176,7 @@ router.patch('/users/:id/role',
 router.post('/create-admin',
     authenticateToken,
     isOwner,
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
         try {
             const { email, password, name } = req.body;
             
@@ -215,7 +218,7 @@ router.post('/create-admin',
 router.delete('/users/:id', 
     authenticateToken,
     isOwner,
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
         try {
             const user = await User.findById(req.params.id);
             
@@ -249,7 +252,7 @@ router.delete('/users/:id',
 router.post('/users/:id/reset-password',
     authenticateToken,
     isAdmin,
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
         try {
             const user = await User.findById(req.params.id);
             
@@ -287,7 +290,7 @@ router.post('/users/:id/reset-password',
 router.post('/users/:id/suspend',
     authenticateToken,
     isAdmin,
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
         try {
             const { 
                 reason, 
@@ -368,7 +371,7 @@ router.post('/users/:id/suspend',
 router.post('/users/:id/reactivate',
     authenticateToken,
     isAdmin,
-    async (req: Request, res: Response): Promise<void> => {
+    async (req: AuthenticatedRequest, res: Response): Promise<void> => {
         try {
             const user = await User.findById(req.params.id);
             
