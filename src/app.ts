@@ -12,6 +12,7 @@ import fs from 'fs';
 import { authRouter } from './routes/auth.routes';
 import { userRouter } from './routes/user.routes';
 import { adminRouter } from './routes/admin.routes';
+import { passwordRouter } from './routes/password.routes';
 
 // Config Imports
 import { connectDatabase } from './config/database';
@@ -39,6 +40,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/auth/password', passwordRouter);
 
 //--------------------------------
 // Server Startup

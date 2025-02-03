@@ -60,10 +60,43 @@ export interface IClient extends Document {
     notes: [{
         content: string;
         date: Date;
-        author: string;
+        author: mongoose.Types.ObjectId;
     }];
     createdAt: Date;
     updatedAt: Date;
+
+    // Add these to the IClient interface
+    assignedTo?: mongoose.Types.ObjectId;  // Reference to User (admin)
+    createdBy: mongoose.Types.ObjectId;    // Reference to User who created
+    lastUpdatedBy: mongoose.Types.ObjectId; // Track who last modified
+
+    projectTimeline: {
+        proposalSent?: Date;
+        proposalAccepted?: Date;
+        projectStarted?: Date;
+        projectCompleted?: Date;
+        maintenanceStarted?: Date;
+    };
+
+    // Add status history
+    statusHistory: [{
+        status: 'lead' | 'proposal' | 'active' | 'completed' | 'maintenance';
+        date: Date;
+        updatedBy: mongoose.Types.ObjectId;
+        notes?: string;
+    }];
+
+    communication: {
+        preferredMethod: 'email' | 'phone' | 'other';
+        preferredTime?: string;
+        timezone: string;
+        alternateContacts?: [{
+            name: string;
+            role: string;
+            email: string;
+            phone?: string;
+        }];
+    };
 }
 
 const clientSchema = new Schema({
@@ -138,8 +171,48 @@ const clientSchema = new Schema({
     notes: [{
         content: { type: String, required: true },
         date: { type: Date, default: Date.now },
-        author: { type: String, required: true }
-    }]
+        author: { type: mongoose.Types.ObjectId, ref: 'User' }
+    }],
+
+    // Add these to the IClient interface
+    assignedTo: { type: mongoose.Types.ObjectId, ref: 'User' },
+    createdBy: { type: mongoose.Types.ObjectId, ref: 'User' },
+    lastUpdatedBy: { type: mongoose.Types.ObjectId, ref: 'User' },
+
+    projectTimeline: {
+        proposalSent: { type: Date },
+        proposalAccepted: { type: Date },
+        projectStarted: { type: Date },
+        projectCompleted: { type: Date },
+        maintenanceStarted: { type: Date }
+    },
+
+    statusHistory: [{
+        status: { 
+            type: String, 
+            enum: ['lead', 'proposal', 'active', 'completed', 'maintenance'],
+            required: true 
+        },
+        date: { type: Date, default: Date.now },
+        updatedBy: { type: mongoose.Types.ObjectId, ref: 'User' },
+        notes: { type: String }
+    }],
+
+    communication: {
+        preferredMethod: { 
+            type: String, 
+            enum: ['email', 'phone', 'other'],
+            required: true 
+        },
+        preferredTime: { type: String },
+        timezone: { type: String, required: true },
+        alternateContacts: [{
+            name: { type: String, required: true },
+            role: { type: String, required: true },
+            email: { type: String, required: true },
+            phone: { type: String }
+        }]
+    }
 }, {
     timestamps: true
 });

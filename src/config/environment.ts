@@ -5,4 +5,5 @@ export const environment = {
     nodeEnv: process.env.NODE_ENV || 'development',
     emailUser: process.env.EMAIL_USER || '',
     emailPassword: process.env.EMAIL_PASSWORD || '',
+    clientUrl: process.env.CLIENT_URL || 'http://localhost:3000'
 }

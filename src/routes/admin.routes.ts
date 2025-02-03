@@ -1,7 +1,7 @@
 import { Router, Response } from 'express';
 import { authenticateToken, isAdmin, isOwner } from '../middleware/auth.middleware';
 import { User } from '../models/User';
-import { sendSuspensionEmail } from '../utils/email.utils';
+import { emailService } from '../services/email.service';
 import { Types } from 'mongoose';
 import { AuthenticatedRequest } from '../types/custom';
 import { Request } from 'express';
@@ -333,7 +333,7 @@ router.post('/users/:id/suspend',
             await user.save();
 
             // Send email notification
-            await sendSuspensionEmail(
+            await emailService.sendSuspensionEmail(
                 user.email,
                 user.name,
                 reason,

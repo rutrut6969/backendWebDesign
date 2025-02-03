@@ -4,6 +4,10 @@ import { User } from '../models/User';
 import jwt from 'jsonwebtoken';
 import { environment } from '../config/environment';
 import { generateToken } from '../utils/jwt.utils';
+import { TwoFactor } from '../models/TwoFactor';
+import { emailService } from '../services/email.service';
+import bcrypt from 'bcrypt';
+import { verifyToken } from '../utils/twoFactor.utils';
 
 const router: Router = Router();
 
@@ -12,18 +16,55 @@ router.post('/register', register);
 router.post('/register/admin', registerAdmin);
 router.post('/login', async (req: Request, res: Response): Promise<void> => {
     try {
-        const { email, password } = req.body;
-        const user = await User.findOne({ email });
+        const { email, password, twoFactorToken, isBackupCode } = req.body;
 
+        // Find user
+        const user = await User.findOne({ email });
         if (!user) {
             res.status(401).json({ message: 'Invalid credentials' });
             return;
         }
 
-        const isMatch = await user.comparePassword(password);
-        if (!isMatch) {
+        // Verify password
+        const isValidPassword = await bcrypt.compare(password, user.password);
+        if (!isValidPassword) {
             res.status(401).json({ message: 'Invalid credentials' });
             return;
+        }
+
+        // Check if user has 2FA enabled
+        const twoFactor = await TwoFactor.findOne({ userId: user._id });
+        
+        if (twoFactor?.isEnabled) {
+            if (!twoFactorToken) {
+                res.status(401).json({
+                    message: '2FA token required',
+                    requires2FA: true,
+                    userId: user._id
+                });
+                return;
+            }
+
+            // Validate 2FA token
+            const isValid = isBackupCode
+                ? await verifyBackupCode(twoFactorToken, twoFactor)
+                : verifyToken(twoFactorToken, twoFactor.secret);
+
+            if (!isValid) {
+                res.status(401).json({ message: 'Invalid 2FA token' });
+                return;
+            }
+
+            // Update last used timestamp
+            twoFactor.lastUsed = new Date();
+            await twoFactor.save();
+
+            // Send login alert email
+            await emailService.send2FALoginAlertEmail(
+                user.email,
+                req.headers['user-agent'] || 'Unknown device',
+                req.ip || 'Unknown location'
+            );
         }
 
         // Check if user is suspended
@@ -38,6 +79,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
+        // Generate JWT token
         const token = generateToken(user);
 
         res.json({
@@ -108,5 +150,23 @@ router.post('/setup-owner', async (req: Request, res: Response): Promise<void> =
         });
     }
 });
+
+// Helper function for verifying backup codes
+async function verifyBackupCode(code: string, twoFactor: any): Promise<boolean> {
+    const backupCodeIndex = await Promise.all(
+        twoFactor.backupCodes.map((hash: string, index: number) => 
+            bcrypt.compare(code, hash).then(match => match ? index : -1)
+        )
+    ).then(results => results.find(index => index !== -1));
+
+    if (backupCodeIndex !== undefined) {
+        // Remove used backup code
+        twoFactor.backupCodes.splice(backupCodeIndex, 1);
+        await twoFactor.save();
+        return true;
+    }
+
+    return false;
+}
 
 export { router as authRouter };
