@@ -666,3 +666,30 @@ npm run format     # Format code with Prettier
       }
       ```
 
+### Testing
+
+- **Running Tests**: 
+  - Before running tests, ensure that the application server is not running on the specified port (e.g., 3000) to avoid conflicts.
+  - Use the following command to run tests:
+    ```bash
+    npx jest
+    ```
+
+- **Test Structure**:
+  - Tests are located in the `__tests__` directory.
+  - Each test file should import the app instance without starting the server automatically.
+
+- **Database Connections**:
+  - Ensure that any database connections are properly closed after tests run. This can be done in the `afterAll` block of your test files:
+    ```typescript
+    afterAll(async () => {
+        await mongoose.connection.close(); // Close the database connection
+    });
+    ```
+
+- **Detect Open Handles**:
+  - If you encounter issues with tests not exiting properly, run Jest with the `--detectOpenHandles` option:
+    ```bash
+    npx jest --detectOpenHandles
+    ```
+

@@ -19,7 +19,6 @@
     "nodemailer": "^6.10.0",
     "otplib": "^12.0.1",
     "qrcode": "^1.5.4",
-    "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
     "ua-parser-js": "^2.0.0",
     "winston": "^3.17.0"
@@ -39,7 +38,8 @@
     "@types/ua-parser-js": "^0.7.39",
     "@types/winston": "^2.4.4",
     "babel-jest": "^29.7.0",
-    "nodemon": "^3.1.9"
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2"
   },
   "scripts": {
     "dev": "nodemon src/app.ts",

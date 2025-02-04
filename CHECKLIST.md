@@ -101,6 +101,15 @@
 - [x] Implemented logout functionality to clear sessions.
 - [x] Implemented login functionality with JWT.
 - [x] Implemented logout functionality.
-- [ ] Write unit tests for authentication logic.
-- [ ] Update documentation to reflect changes in authentication.
+- [x] Write unit tests for authentication logic.
+- [x] Update documentation to reflect changes in authentication and testing.
 - [ ] Prepare for deployment.
+
+### Client Features Enhancement
+
+- [ ] Implement search/filter functionality for clients.
+- [ ] Add pagination for client lists.
+- [ ] Implement client history tracking.
+- [ ] Set up client-related notifications.
+- [ ] Create export functionality for client data.
+- [ ] Develop a client reporting system.

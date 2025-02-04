@@ -15,6 +15,7 @@ import { authRouter } from './routes/auth.routes';
 import { userRouter } from './routes/user.routes';
 import { adminRouter } from './routes/admin.routes';
 import { passwordRouter } from './routes/password.routes';
+import clientRoutes from './routes/client.routes';
 
 // Config Imports
 import { connectDatabase } from './config/database';
@@ -79,6 +80,7 @@ app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/admin', adminRouter);
 app.use('/api/auth/password', passwordRouter);
+app.use('/api', clientRoutes);
 
 //--------------------------------
 // Logout Route
