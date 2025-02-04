@@ -160,6 +160,9 @@ The system uses JSON Web Tokens (JWT) for authentication. Each token contains:
 - File Upload Validation
 - Input Sanitization
 - Suspension System
+- **Two-Factor Authentication**: Added for enhanced security.
+- **Rate Limiting**: Implemented to prevent brute force attacks.
+- **Device Tracking**: Monitors user devices for suspicious activity.
 
 ### Error Handling
 
@@ -233,7 +236,9 @@ Content-Type: application/json
 Request:
 {
     "email": "user@example.com",
-    "password": "password123"
+    "password": "password123",
+    "twoFactorToken": "123456",  // Optional for 2FA
+    "isBackupCode": false         // Optional for backup code verification
 }
 
 Response: (200 OK)
@@ -583,81 +588,6 @@ npm run format     # Format code with Prettier
 - Log errors appropriately
 - Return consistent error responses
 - Handle edge cases
-
-## API Reference
-
-### Authentication Endpoints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/api/auth/register` | Register new user |
-| POST | `/api/auth/login` | User login |
-| POST | `/api/auth/logout` | User logout |
-| POST | `/api/auth/refresh` | Refresh token |
-
-### User Endpoints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/users/profile` | Get user profile |
-| PATCH | `/api/users/profile` | Update profile |
-| POST | `/api/users/profile/image` | Upload profile image |
-| DELETE | `/api/users/profile/image` | Delete profile image |
-
-### Admin Endpoints
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/admin/users` | Get all users |
-| GET | `/api/admin/users/:id` | Get specific user |
-| POST | `/api/admin/create-admin` | Create admin (Owner) |
-| PATCH | `/api/admin/users/:id/role` | Update user role |
-| POST | `/api/admin/users/:id/suspend` | Suspend user |
-| POST | `/api/admin/users/:id/reactivate` | Reactivate user |
-| DELETE | `/api/admin/users/:id` | Delete user |
-
-## Contributing
-
-### Getting Started
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Open Pull Request
-
-### Pull Request Process
-1. Update README.md with details of changes
-2. Update CHANGELOG.md if applicable
-3. Update any relevant documentation
-4. Ensure all tests pass
-5. Get approval from maintainers
-
-### Code of Conduct
-- Be respectful and inclusive
-- Follow project conventions
-- Write clear commit messages
-- Keep discussions professional
-- Help others when possible
-
-## License
-
-MIT License
-
-Copyright (c) [year] [fullname]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-[Rest of MIT license text...]
-
-## Support
-
-For support, please:
-1. Check existing issues
-2. Create new issue with detailed description
-3. Join our community chat
-4. Email support team
 
 ## Acknowledgments
 - Node.js community
