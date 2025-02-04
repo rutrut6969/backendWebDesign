@@ -1,6 +1,14 @@
 import { Request, Response } from 'express';
-import { User } from '../models/User';
+import { User, IUser } from '../models/User';
 import { generateToken } from '../utils/jwt.utils';
+import { Session } from 'express-session';
+
+// Extend the Request interface to include the session
+interface CustomRequest extends Request {
+    session: Session & {
+        userId?: string; // Make userId optional
+    };
+}
 
 export const register = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -64,11 +72,11 @@ export const registerAdmin = async (req: Request, res: Response): Promise<void> 
     }
 };
 
-export const login = async (req: Request, res: Response): Promise<void> => {
+export const login = async (req: CustomRequest, res: Response): Promise<void> => {
     try {
         const { email, password } = req.body;
 
-        const user = await User.findOne({ email });
+        const user: IUser | null = await User.findOne({ email });
         if (!user) {
             res.status(401).json({ message: 'Invalid email or password' });
             return;
@@ -79,6 +87,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
             res.status(401).json({ message: 'Invalid email or password' });
             return;
         }
+        // Store user information in the session
+        req.session.userId = user._id.toString(); // Store user ID in session
 
         const token = generateToken(user);
 

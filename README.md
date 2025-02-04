@@ -163,6 +163,22 @@ The system uses JSON Web Tokens (JWT) for authentication. Each token contains:
 - **Two-Factor Authentication**: Added for enhanced security.
 - **Rate Limiting**: Implemented to prevent brute force attacks.
 - **Device Tracking**: Monitors user devices for suspicious activity.
+- **Helmet**: Implemented to set various HTTP headers for security, including:
+  - **Content Security Policy**: Restricts the sources from which content can be loaded.
+  - **Cross-Origin Resource Policy**: Set to `same-origin` to restrict access to the same origin.
+  - **Referrer Policy**: Set to `no-referrer` to prevent sending referrer information.
+  - **Strict-Transport-Security**: Enforces HTTPS for one year, including subdomains.
+  - **X-Content-Type-Options**: Prevents MIME-sniffing.
+  - **X-Frame-Options**: Prevents clickjacking by allowing framing only from the same origin.
+  - **X-XSS-Protection**: Enabled to protect against cross-site scripting attacks.
+
+- **Session Management**: Implemented using `express-session` to manage user sessions securely.
+  - User ID is stored in the session upon successful login.
+  - Sessions are cleared upon logout (if implemented).
+
+- **Rate Limiting**: Implemented to prevent brute force attacks on authentication routes.
+- **Two-Factor Authentication**: Added for enhanced security during user login.
+- **Device Tracking**: Monitors user devices for suspicious activity.
 
 ### Error Handling
 
@@ -594,4 +610,59 @@ npm run format     # Format code with Prettier
 - Express.js team
 - TypeScript team
 - All contributors 
+
+### Authentication
+
+- **Login Endpoint**: 
+  - **Method**: `POST`
+  - **URL**: `/api/auth/login`
+  - **Request Headers**:
+    ```plaintext
+    Content-Type: application/json
+    Accept: application/json
+    ```
+  - **Request Body** (JSON):
+    ```json
+    {
+        "email": "user@example.com",
+        "password": "your_plain_text_password"
+    }
+    ```
+  - **Response**:
+    - On success:
+      ```json
+      {
+          "message": "Login successful",
+          "token": "your_jwt_token",
+          "user": {
+              "id": "user_id",
+              "email": "user@example.com",
+              "name": "User Name",
+              "role": "user_role"
+          }
+      }
+      ```
+    - On failure:
+      ```json
+      {
+          "message": "Invalid email or password"
+      }
+      ```
+
+- **Logout Endpoint**: 
+  - **Method**: `POST`
+  - **URL**: `/api/auth/logout`
+  - **Request Headers**:
+    ```plaintext
+    Content-Type: application/json
+    Accept: application/json
+    Authorization: Bearer <your_jwt_token> // If required
+    ```
+  - **Response**:
+    - On success:
+      ```json
+      {
+          "message": "Logout successful"
+      }
+      ```
 

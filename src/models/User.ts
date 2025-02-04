@@ -4,6 +4,7 @@ import bcryptjs from 'bcryptjs';
 export type SuspensionCategory = 'VIOLATION' | 'SPAM' | 'ABUSE' | 'SECURITY' | 'OTHER';
 
 export interface IUser extends Document {
+    _id: mongoose.Types.ObjectId;
     email: string;
     password: string;
     name: string;
@@ -20,11 +21,11 @@ export interface IUser extends Document {
     updatedAt: Date;
     suspensionCategory?: SuspensionCategory;
     suspensionEnd?: Date;
-    comparePassword(candidatePassword: string): Promise<boolean>;
+    comparePassword: (password: string) => Promise<boolean>;
     isSuspensionExpired(): boolean;
 }
 
-const userSchema = new Schema({
+const userSchema = new Schema<IUser>({
     email: {
         type: String,
         required: true,
@@ -108,8 +109,8 @@ userSchema.pre('save', async function (next) {
 })
 
 // Method to compare passwords
-userSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
-    return bcryptjs.compare(candidatePassword, this.password);
+userSchema.methods.comparePassword = async function (password: string): Promise<boolean> {
+    return bcryptjs.compare(password, this.password);
 }
 
 // Add method to check if suspension is expired

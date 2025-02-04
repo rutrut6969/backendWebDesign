@@ -92,3 +92,15 @@
 2. ✅ Implement Account Recovery
 3. ✅ Set up Two-Factor Authentication
 4. [ ] Add Client Search/Filter Functionality
+
+## Checklist
+
+- [x] Implemented Helmet for security headers.
+- [x] Set up session management using `express-session`.
+- [x] User ID is stored in the session upon successful login.
+- [x] Implemented logout functionality to clear sessions.
+- [x] Implemented login functionality with JWT.
+- [x] Implemented logout functionality.
+- [ ] Write unit tests for authentication logic.
+- [ ] Update documentation to reflect changes in authentication.
+- [ ] Prepare for deployment.
